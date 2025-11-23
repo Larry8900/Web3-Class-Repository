@@ -120,13 +120,90 @@ PoS: decentralization depends on stake distribution; exchanges and large holders
 ## Part 2: Gas, Blocks & Confirmations
 
 ### Gas Economics
-[Your research]
+- What is gas?
+
+Gas is a unit that measures the work required to execute operations on a blockchain virtual machine (e.g., the Ethereum EVM). Think of gas as the fuel metered per computational step, storage read/write, or cryptographic operation. You pay for the gas in the chain’s native token (ETH on Ethereum) so validators/validators are compensated for processing your transaction. 
+
+
+- Why gas?
+The metaphor comes from real-world fuel: different operations consume different amounts of fuel (gas). It communicates that computation (not just bytes transferred) is being paid for.
+
+- How gas pricing works
+
+Gas price is how much ETH you pay per unit of gas. It’s typically expressed in Gwei (1 Gwei = 10⁻⁹ ETH). Wallets show gas-price suggestions in Gwei
+
+- How gas price is determined
+
+Market-driven: users compete for limited block-space. Higher offered tip means higher chance block builder picks your transaction. Base fee adjusts per-block based on demand. Tools (gas oracles) recommend price levels by looking at mempool and recent blocks. 
+
+
+- Gas limit vs gas price
+
+Gas limit = maximum gas units you allow the transaction to consume (a safety cap).
+
+Gas price = how much you actually pay per unit.
+Total paid = gasUsed × gasPrice
+
+- Gas optimization strategies
+
+When prices are lowest
+
+Off-peak network usage — early mornings / weekends by global demand patterns — but times vary by chain and user base. Use gas trackers to see cheap windows. 
+
+- How to reduce gas costs
+
+- Use optimized smart-contract code (fewer storage writes, pack variables, minimize loops).
+
+- Batch operations - Combine many operations into one transaction (e.g., a single contract call that executes multiple transfers).
+
+- Use Layer 2s or alternative chains with lower base fees. 
+
+
 
 ### Blocks Structure
-[Your research]
+What is a block?
+
+A block is a container or record that batches many transactions together and links them to the chain. Each block has header metadata, a list of transactions, and summary hashes that cryptographically represent the transactions. Nodes validate blocks and append them to the chain in order
+
+- What information a block contains
+
+Header: timestamp, previous block hash, nonce (PoW) or other consensus-specific fields, Merkle root of transactions, block number, difficulty/target (PoW) or state root, etc.
+
+Body: ordered list of transactions and receipts.
+
+Merkle root: compact fingerprint for the whole transaction set enabling efficient proofs.
+
+- How blocks are linked
+
+Each block stores the previous block’s hash in its header. Because the header is hashed, linking makes the chain tamper-evident: changing an old block would require redoing all later blocks’ proofs (PoW) or violating finality rules (PoS).
+
+- How many transactions fit in a block?
+
+Not a fixed number — depends on block gas limit (Ethereum) or block size (Bitcoin) and the size/gas cost of each transaction. Example: Ethereum blocks have a gas limit per block (a cap on total gas used by transactions inside it); if many complex txs are included the block holds fewer transactions
+
+- What is block time?
+
+The average time between new blocks being produced (e.g., Bitcoin ~10 minutes, Ethereum ~12–15 seconds, Solana ~400ms - few 100s ms depending on network). Block time depends on protocol design and consensus.
 
 ### Confirmations
-[Your research]
+
+-What are confirmations?
+
+A confirmation is a count of how many blocks have been added on top of the block that contains your transaction. If your tx is in block N, and the chain tip is at N+3, your transaction has 3 confirmations. Each new block makes earlier blocks more difficult to revert.
+
+-Why confirmations matter
+
+They measure the probability that a transaction will not be reversed by a reorg (a competing longer chain replacing blocks). More confirmations → exponentially lower probability of successful rollback (in PoW) or stronger finality (in PoS where checkpoints/finality exist).
+
+- How many confirmations are typical?
+
+Bitcoin: 1–3 confirmations for small payments, 6 confirmations often considered “safe” for large transfers.
+
+Ethereum: Because blocks are faster, exchanges often require 12–64 confirmations depending on value and policy (but with PoS finality, once a block is finalized via the finality gadget, it’s stronger). 
+
+Why exchanges require more confirmations
+
+To reduce the risk of double-spend and reorg-based loss. Exchanges are custodians — they set conservative confirmation thresholds based on chain characteristics, tx value, and historical reorg risk.
 
 ---
 
