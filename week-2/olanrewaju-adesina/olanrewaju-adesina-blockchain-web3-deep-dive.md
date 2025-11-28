@@ -210,7 +210,10 @@ To reduce the risk of double-spend and reorg-based loss. Exchanges are custodian
 ## Part 3: Wallet Security & Types
 
 ### Custodial vs Non-Custodial Wallets
-[Your research and comparison]
+What Are Custodial Wallets?
+
+A custodial wallet is a wallet where a third party holds your private keys for you.
+They act like a bank — you have an account, but they control the vault.
 
 ### Hot vs Cold Wallets
 [Your research and comparison]
