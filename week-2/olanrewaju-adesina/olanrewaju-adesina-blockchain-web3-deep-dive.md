@@ -470,13 +470,104 @@ Save money on mints or swaps
 ## Part 5: MEV (Maximal Extractable Value)
 
 ### Understanding MEV
-[Your research]
+- What is MEV?
+
+MEV stands for Maximal Extractable Value which is the extra profit a party that controls transaction ordering (miners, validators, or block builders) can extract by reordering, inserting, or censoring transactions inside blocks. It’s value beyond normal gas fees — extracted by exploiting ordering opportunities in the mempool and block production process.
+
+Maximal Extractable Value meaning
+Maximal means the largest profit available from reordering or manipulating transactions in a block, given current knowledge and tooling. It generalizes the older term “Miner Extractable Value” to include validators and block builders in PoS/L2 systems
+
+- Who are MEV extractors?
+
+1. Searchers (bots/traders) that scan the mempool for profitable sequences (arbitrage, liquidations, sandwichable trades).
+2. Builders who assemble blocks containing profitable transactions.
+3. Validators/miners who can choose which block to publish or include. they capture or split profits with builders.
+
+- How MEV works
+
+High-level flow
+
+1. A user broadcasts a transaction, then it sits in the mempool (public).
+2. Searcher bots watch the mempool, detect profitable opportunities (e.g., price difference, liquidation).
+3. Searchers craft one or more transactions to exploit that opportunity and try to get those transactions included in a favorable order.
+4. They compete (often via higher gas/tips or private channels) to have their transactions ordered as they want.
+5. A miner/validator or builder who includes those transactions captures the MEV (either directly or by auctioning ordering rights).
+
+Types of MEV (short taxonomy)
+
+Arbitrage: Insert transactions that profit from price differences across DEXes.
+
+Liquidations / priority executions: Jump to capture liquidation or funding payments.
+
+Front-running: Attacker inserts a transaction before a target tx to profit from expected price movement.
+
+Back-running: Attacker inserts a tx immediately after a target to profit from the price impact the target caused.
+
+Sandwich attack: Front-run + back-run a victim’s trade to buy just before and sell just after, capturing the price movement and worsening the victim’s execution.
+
+Censorship / time-bandit attacks: Reject or reorder transactions to gain advantage or destabilize.
+
+- Real-world examples 
+
+Flashbots (one of the main infrastructure projects tracking/mitigating MEV) pioneered MEV measurement and private marketplaces; early Flashbots research documented millions of dollars in extracted MEV and continues to publish stats and tooling. Flashbots’ historical analyses put mined/extracted MEV in the hundreds of millions on Ethereum (their public resources aggregate large figures). 
+
+
+Sandwich attacks are repeatedly observed leaking funds from DeFi users (examples reported across Uniswap, BSC, etc.). Individual sandwich incidents have cost traders thousands to hundreds of thousands of dollars. 
+
+
+Priority Gas Auctions (PGAs) and bidding wars by searchers have driven gas price spikes, increasing average fees during congested windows. Research papers and Flashbots analyses document these effects
 
 ### Impact on Users
-[Your analysis]
+
+How MEV affects transactions & costs
+
+- Higher effective costs: MEV searchers often pay extra fees (or bid via private deals) to secure ordering — those costs can be passed onto users indirectly (higher base fees during PGAs) or directly (worse execution price from sandwiches). 
+
+- Worse execution & slippage: MEV ordering can increase slippage for AMM trades and make swaps more expensive.
+
+- Failed or replaced txs: Searchers submit multiple escalating transactions (replace-by-fee) to win auctions; this churn increases network congestion and can make innocent txs fail or be delayed.
+
+Effects on DeFi users
+
+- Arbitrage and liquidations: Beneficial in that arbitrage keeps prices aligned and liquidations enforce solvency — but the profits often flow to sophisticated bots, not end-users.
+
+- Front-/sandwich attacks: Reduce value captured by regular traders, increasing implied costs of using DEXes
+
+NFT mints & drops: MEV bots can detect mint transactions and either front-run them (buy the scarce items) or use priority channels to guarantee inclusion, making fair drops harder.
+
+Bot scalping: Rapid bots can buy large portions of supply, leaving creators’ intended collectors priced out. Creators sometimes see bots sniping mints or exploiting mint logic.
+
+How creators protect against MEV
+
+- Private minting/presale allowlists (keep mints off public mempool).
+- Commit–reveal schemes (hide mint parameters until commitment is revealed).
+- Server-side whitelisting / captcha / captcha + queue systems to limit bot access.
+- Use private transaction relays or builder channels to reduce public exposure
 
 ### MEV Solutions
-[Your research]
+MEV Solutions — current Solution
+
+- Flashbots Auction / Flashbots Protect provide private channels where searchers submit bundles directly to builders/validators instead of the public mempool; auction mechanisms let searchers bid for block inclusion while reducing harmful public frontrunning. These private-relay systems try to make MEV extraction more transparent and reduce failed transactions. 
+
+
+- Private mempools / sealed-bid auctions
+
+Builders accept sealed bids for block construction; this reduces public mempool leakage and some forms of harmful front-running, while creating an explicit market for ordering. Flashbots and other builders implement variants of this. 
+
+- Commit–reveal schemes
+
+Smart contract pattern: user commits a hash of action, later reveals the payload. Prevents bots from seeing actionable details in the mempool. Adds UX friction and complexity (must handle reveal timeout / UX). Useful for fair mints. 
+
+
+- How do Layer 2s handle MEV
+
+L2 rollups (optimistic & zk) and sequencer models can change where and how ordering is decided. Some L2s implement sequencers with different incentive rules or allow private submission methods to reduce public MEV exposure. However, L2 sequencer centralization can itself create MEV risk unless mitigated. 
+
+Future developments 
+
+MEV extraction may be inevitable — the question is who benefits and how transparently it occurs. Some argue MEV can be socially useful (arbitrage/regularization, liquidation efficiency) if capture is fair and fees are recycled to users or protocol security. Others highlight harms (user losses, censorship pressure, centralization). 
+
+Possible directions: more sophisticated auctioning/block-building markets (fair auctions, proposer-builder separation), revenue redistribution (refunds to users or staking pools), on-chain MEV auctions, better private-relay alternatives, protocol-level changes to remove easy ordering-based profit (hard problem). Research and protocol experiments continue.
 
 ---
 
